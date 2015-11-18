@@ -82,33 +82,33 @@ public class BrowseFragment extends Fragment {
 
     private MediaBrowser.ConnectionCallback mConnectionCallback =
             new MediaBrowser.ConnectionCallback() {
-        @Override
-        public void onConnected() {
-            LogHelper.d(TAG, "onConnected: session token " + mMediaBrowser.getSessionToken());
+                @Override
+                public void onConnected() {
+                    LogHelper.d(TAG, "onConnected: session token " + mMediaBrowser.getSessionToken());
 
-            if (mMediaId == null) {
-                mMediaId = mMediaBrowser.getRoot();
-            }
-            mMediaBrowser.subscribe(mMediaId, mSubscriptionCallback);
-            if (mMediaBrowser.getSessionToken() == null) {
-                throw new IllegalArgumentException("No Session token");
-            }
-            MediaController mediaController = new MediaController(getActivity(),
-                    mMediaBrowser.getSessionToken());
-            getActivity().setMediaController(mediaController);
-        }
+                    if (mMediaId == null) {
+                        mMediaId = mMediaBrowser.getRoot();
+                    }
+                    mMediaBrowser.subscribe(mMediaId, mSubscriptionCallback);
+                    if (mMediaBrowser.getSessionToken() == null) {
+                        throw new IllegalArgumentException("No Session token");
+                    }
+                    MediaController mediaController = new MediaController(getActivity(),
+                            mMediaBrowser.getSessionToken());
+                    getActivity().setMediaController(mediaController);
+                }
 
-        @Override
-        public void onConnectionFailed() {
-            LogHelper.d(TAG, "onConnectionFailed");
-        }
+                @Override
+                public void onConnectionFailed() {
+                    LogHelper.d(TAG, "onConnectionFailed");
+                }
 
-        @Override
-        public void onConnectionSuspended() {
-            LogHelper.d(TAG, "onConnectionSuspended");
-            getActivity().setMediaController(null);
-        }
-    };
+                @Override
+                public void onConnectionSuspended() {
+                    LogHelper.d(TAG, "onConnectionSuspended");
+                    getActivity().setMediaController(null);
+                }
+            };
 
     public static BrowseFragment newInstance(String mediaId) {
         Bundle args = new Bundle();
@@ -149,6 +149,7 @@ public class BrowseFragment extends Fragment {
         mMediaBrowser = new MediaBrowser(getActivity(),
                 new ComponentName(getActivity(), MusicService.class),
                 mConnectionCallback, null);
+
 
         return rootView;
     }

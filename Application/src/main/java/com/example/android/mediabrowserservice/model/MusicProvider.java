@@ -16,9 +16,11 @@
 
 package com.example.android.mediabrowserservice.model;
 
+import android.content.res.AssetManager;
 import android.media.MediaMetadata;
 import android.os.AsyncTask;
 
+import com.example.android.mediabrowserservice.management.MediaBrowserApplication;
 import com.example.android.mediabrowserservice.utils.LogHelper;
 
 import org.json.JSONArray;
@@ -30,8 +32,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -48,7 +48,7 @@ public class MusicProvider {
     private static final String TAG = LogHelper.makeLogTag(MusicProvider.class);
 
     private static final String CATALOG_URL =
-        "http://storage.googleapis.com/automotive-media/music.json";
+            "http://storage.googleapis.com/automotive-media/music.json";
 
     public static final String CUSTOM_METADATA_TRACK_SOURCE = "__SOURCE__";
 
@@ -99,7 +99,6 @@ public class MusicProvider {
 
     /**
      * Get music tracks of the given genre
-     *
      */
     public Iterable<MediaMetadata> getMusicsByGenre(String genre) {
         if (mCurrentState != State.INITIALIZED || !mMusicListByGenre.containsKey(genre)) {
@@ -111,7 +110,6 @@ public class MusicProvider {
     /**
      * Very basic implementation of a search that filter music tracks which title containing
      * the given query.
-     *
      */
     public Iterable<MediaMetadata> searchMusic(String titleQuery) {
         if (mCurrentState != State.INITIALIZED) {
@@ -298,11 +296,15 @@ public class MusicProvider {
     private JSONObject fetchJSONFromUrl(String urlString) {
         InputStream is = null;
         try {
-            URL url = new URL(urlString);
-            URLConnection urlConnection = url.openConnection();
-            is = new BufferedInputStream(urlConnection.getInputStream());
+            // URL url = new URL(urlString);
+            //URLConnection urlConnection = url.openConnection();
+
+            AssetManager asstmgr = MediaBrowserApplication.getInstance().getApplicationContext().getAssets();
+            InputStream in = asstmgr.open("music.json", MediaBrowserApplication.MODE_PRIVATE);
+
+            is = new BufferedInputStream(in);
             BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    urlConnection.getInputStream(), "iso-8859-1"));
+                    in, "iso-8859-1"));
             StringBuilder sb = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
